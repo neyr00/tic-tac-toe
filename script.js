@@ -125,21 +125,26 @@ document.addEventListener('DOMContentLoaded', () => {
             let comb = [gameState[winCondition[0]],
                         gameState[winCondition[1]],
                         gameState[winCondition[2]]];
-            if( comb.filter(i => i === currentPlayer).length === 2 &&
-                comb.filter(i => i === ((currentPlayer === 'X') ? 'O' : 'X')).length === 0 )
-                return winCondition[comb.findIndex(i => i === '')];
-                
-            else if (comb.filter(i => i === ((currentPlayer === 'X') ? 'O' : 'X')).length === 2 &&
-                     comb.filter(i => i === '').length === 1)
+            if (comb.filter(i => i === currentPlayer).length === 2 &&
+                comb.filter(i => i === '').length === 1)
                 return winCondition[comb.findIndex(i => i === '')];
         }
-
         for (let i = 0; i < winComb.length; i++) {
             const winCondition = winComb[i];
             let comb = [gameState[winCondition[0]],
                         gameState[winCondition[1]],
                         gameState[winCondition[2]]];
-            if(comb.filter(i => i === ((currentPlayer === 'X') ? 'O' : 'X')).length === 0 )
+            if (comb.filter(i => i === ((currentPlayer === 'X') ? 'O' : 'X')).length === 2 &&
+                            comb.filter(i => i === '').length === 1)
+                return winCondition[comb.findIndex(i => i === '')];
+        }
+        for (let i = 0; i < winComb.length; i++) {
+            const winCondition = winComb[i];
+            let comb = [gameState[winCondition[0]],
+                        gameState[winCondition[1]],
+                        gameState[winCondition[2]]];
+            if (comb.filter(i => i === currentPlayer).length === 1 &&
+                comb.filter(i => i === '').length === 2 )
                 return winCondition[comb.findIndex(i => i === '')];
         }
         
@@ -171,6 +176,10 @@ document.addEventListener('DOMContentLoaded', () => {
         xBtn.textContent = 'X';
 
         const oBtn = document.createElement('button');
+        if(VS_bot)
+            oBtn.classList.remove('oDisabled');
+        else
+            oBtn.classList.add('oDisabled');
         oBtn.textContent = 'O';
 
         // Slider
@@ -225,9 +234,11 @@ document.addEventListener('DOMContentLoaded', () => {
             if (this.checked) {
                 VS_bot = true;
                 switchText.textContent = 'vs bot';
+                oBtn.classList.remove('oDisabled');
             } else {
                 VS_bot = false;
                 switchText.textContent = 'vs human';
+                oBtn.classList.add('oDisabled');
             }
         });
         

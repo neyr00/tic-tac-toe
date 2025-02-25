@@ -69,6 +69,7 @@ body {
     border-radius: var(--radius);
     top: 60%;
     width: 300px;
+    height: auto;
     gap: 10px;
     box-shadow: 0 0 10px var(--shadow);
     z-index: 10;
@@ -84,8 +85,9 @@ body {
     font-size: 30px;
     font-weight: bold;
     position: relative;
-    top: 10px;
-    margin: 0;
+    align-items: center;
+    margin-top: 5px;
+    margin-bottom: 5px;
 }
 
 .message-box{
@@ -94,7 +96,6 @@ body {
     justify-content: space-around;
     align-items: center;
     height: 60px;
-    /* padding-top: 10px; */
 }
 
 .message, .sliderText{
@@ -137,6 +138,11 @@ button {
 button:hover {
     background-color: var(--black);
     color: var(--white);
+}
+
+button.oDisabled {
+    opacity: 0%;
+    pointer-events: none;
 }
 
 button.yes, button.no {
