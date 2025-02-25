@@ -8,7 +8,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const gameBoard = document.getElementById('game');
     let currentPlayer;
-    let AI_strength = 100;
+    let AI_strength = 50;
     let gameState = ['', '', '', '', '', '', '', '', ''];
     const winComb = [
         [0, 1, 2],
@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function handleCellLeave(event) {
         const cell = event.target;
-        
+
         if(cell.classList.contains('cell_hover')){
             cell.classList.remove('cell_hover');
             cell.textContent = '';
@@ -159,8 +159,8 @@ document.addEventListener('DOMContentLoaded', () => {
         message.textContent = 'CHOOSE';
         message.classList.add('message');
 
-        const messagebox = document.createElement('div');
-        messagebox.classList.add('message-box');
+        const messageBox = document.createElement('div');
+        messageBox.classList.add('message-box');
 
         const xBtn = document.createElement('button');
         xBtn.textContent = 'X';
@@ -168,26 +168,52 @@ document.addEventListener('DOMContentLoaded', () => {
         const oBtn = document.createElement('button');
         oBtn.textContent = 'O';
 
+        const sliderBox = document.createElement('div');
+        sliderBox.classList.add('message-box');
+
+        const slider = document.createElement('input');
+        slider.classList.add('slider');
+        slider.type = 'range';
+        slider.min = '0';
+        slider.max = '100';
+        slider.value = AI_strength;
+        slider.id = 'slider';
+
+        const difficult = document.createElement('p');
+        difficult.classList.add('sliderText');
+        difficult.textContent = 'difficult';
+
         // Events
         xBtn.addEventListener('click', function() {
             document.body.removeChild(background);
             isPlayerTurn = true;
             isGameActive = true;
+            console.log(AI_strength);
         });
-
         oBtn.addEventListener('click', function() {
             document.body.removeChild(background);
             isPlayerTurn = false;
             isGameActive = true;
+            console.log(AI_strength);
             botMove();
         });
-
-        messagebox.appendChild(message);
-        messagebox.appendChild(oBtn);
-        messagebox.appendChild(xBtn);
-        box.appendChild(messagebox);
+        slider.addEventListener('input', (event) => {
+            currentValue = event.target.value;
+            AI_strength = slider.value;
+        });
+        
+        
+        messageBox.appendChild(message);
+        messageBox.appendChild(oBtn);
+        messageBox.appendChild(xBtn);
+        box.appendChild(messageBox);
+        
+        sliderBox.appendChild(difficult);
+        sliderBox.appendChild(slider);
+        box.appendChild(sliderBox);
+        
         background.appendChild(box);
-
+        
         document.body.appendChild(background);
     }
 

@@ -15,6 +15,7 @@ body {
     margin: 0;
     font-family: 'Roboto', sans-serif;
     text-transform: uppercase;
+    overflow: hidden;
 }
 
 #game {
@@ -68,6 +69,7 @@ body {
     background-color: var(--white);
     border-radius: var(--radius);
     top: 60%;
+    width: 350px;
     gap: 10px;
     box-shadow: 0 0 10px var(--shadow);
     z-index: 10;
@@ -91,11 +93,34 @@ body {
     width: 300px;
     justify-content: space-around;
     align-items: center;
+    height: 60px;
+    padding-top: 10px;
 }
 
-.message {
+.message, .sliderText{
     font-size: 20px;
     font-weight: bold;
+    text-align: left;
+    padding: 0;
+}
+
+.slider {
+    width: 140px;
+    height: 20px;
+    outline-width: 20px;
+    border-radius: 5px;
+    appearance: none; 
+    border: 2px solid var(--black);
+}
+
+.slider::-webkit-slider-thumb {
+    appearance: none;
+    width: 20px;
+    height: 20px;
+    background: var(--black); 
+    border: 2px solid var(--white);
+    cursor: pointer; 
+    border-radius: 5px; 
 }
 
 button {
