@@ -9,6 +9,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const gameBoard = document.getElementById('game');
     let currentPlayer;
     let AI_strength = 50;
+    VS_bot = true;
     let gameState = ['', '', '', '', '', '', '', '', ''];
     const winComb = [
         [0, 1, 2],
@@ -27,13 +28,13 @@ document.addEventListener('DOMContentLoaded', () => {
         const clickedCell = event.target;
         const clickedCellIndex = parseInt(clickedCell.getAttribute('cell-index'));
 
-        if (gameState[clickedCellIndex] !== '' || !isGameActive || !isPlayerTurn) {
+        if (gameState[clickedCellIndex] !== '' || !isGameActive || (!isPlayerTurn && VS_bot)) {
             return;
         }
 
         gameState[clickedCellIndex] = currentPlayer;
         clickedCell.textContent = currentPlayer;
-        console.log(`PLAYER: ${clickedCellIndex}`);
+        console.log(`PLAYER ${currentPlayer}: ${clickedCellIndex}`);
         clickedCell.classList.remove('cell_hover');
         isPlayerTurn = false;
         winCheck();
@@ -99,6 +100,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function botMove() {
+        if(!VS_bot)
+            return;
         let availableCells = gameState.map((cell, index) => cell === '' ? index : null).filter(cell => cell !== null);
 
         let botCellIndex;
@@ -107,7 +110,7 @@ document.addEventListener('DOMContentLoaded', () => {
         else
             botCellIndex = randomMove(availableCells);   
 
-        console.log(`BOT: ${botCellIndex}`);
+        console.log(`BOT ${currentPlayer}: ${botCellIndex}`);
         gameState[botCellIndex] = currentPlayer;
         document.querySelector(`[cell-index='${botCellIndex}']`).textContent = currentPlayer;
         isPlayerTurn = true;    
@@ -155,19 +158,22 @@ document.addEventListener('DOMContentLoaded', () => {
         const box = document.createElement('div');
         box.classList.add('box');
 
+        // Message
+        const messageBox = document.createElement('div');
+        messageBox.classList.add('message-box');
+
         const message = document.createElement('p');
         message.textContent = 'CHOOSE';
         message.classList.add('message');
 
-        const messageBox = document.createElement('div');
-        messageBox.classList.add('message-box');
-
+        // Buttons
         const xBtn = document.createElement('button');
         xBtn.textContent = 'X';
 
         const oBtn = document.createElement('button');
         oBtn.textContent = 'O';
 
+        // Slider
         const sliderBox = document.createElement('div');
         sliderBox.classList.add('message-box');
 
@@ -183,23 +189,46 @@ document.addEventListener('DOMContentLoaded', () => {
         difficult.classList.add('sliderText');
         difficult.textContent = 'difficult';
 
+        // CheckBox
+        const label = document.createElement('label');
+        label.classList.add('switchField');
+
+        const switchBtn = document.createElement('input');
+        switchBtn.type = 'checkbox';
+        switchBtn.id = 'switchBtn';
+        switchBtn.checked = VS_bot;
+
+        const switchBack = document.createElement('div');
+        switchBack.classList.add('toggle');
+
+        const switchText = document.createElement('div');
+        switchText.classList.add('switchText');
+        switchText.textContent = VS_bot ? 'vs bot' : 'vs human'; 
+        
         // Events
         xBtn.addEventListener('click', function() {
             document.body.removeChild(background);
             isPlayerTurn = true;
             isGameActive = true;
-            console.log(AI_strength);
         });
         oBtn.addEventListener('click', function() {
             document.body.removeChild(background);
             isPlayerTurn = false;
             isGameActive = true;
-            console.log(AI_strength);
             botMove();
         });
         slider.addEventListener('input', (event) => {
             currentValue = event.target.value;
             AI_strength = slider.value;
+        });
+        switchBtn.addEventListener('change', function() {
+            if (this.checked) {
+                VS_bot = true;
+                switchText.textContent = 'vs bot';
+            } else {
+                VS_bot = false;
+                switchText.textContent = 'vs human';
+            }
         });
         
         
@@ -212,8 +241,12 @@ document.addEventListener('DOMContentLoaded', () => {
         sliderBox.appendChild(slider);
         box.appendChild(sliderBox);
         
-        background.appendChild(box);
+        label.appendChild(switchBtn);
+        label.appendChild(switchBack);
+        label.appendChild(switchText);
+        box.appendChild(label);    
         
+        background.appendChild(box);
         document.body.appendChild(background);
     }
 
@@ -224,6 +257,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const box = document.createElement('div');
         box.classList.add('box');
 
+        // Message
         const messagebox = document.createElement('div');
         messagebox.classList.add('message-box');
 
@@ -240,6 +274,7 @@ document.addEventListener('DOMContentLoaded', () => {
         message.classList.add('message');
         message.textContent = 'RESTART?';
 
+        // Buttons
         const yesBtn = document.createElement('button');
         yesBtn.classList.add('yes');
         yesBtn.textContent = 'YES';
@@ -285,6 +320,5 @@ document.addEventListener('DOMContentLoaded', () => {
             gameBoard.appendChild(cell);
         }
     }
-    //end('X');
     createBoard();
 });
