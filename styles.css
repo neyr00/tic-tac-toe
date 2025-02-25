@@ -1,0 +1,118 @@
+:root {
+    --white: rgb(255, 255, 255); 
+    --black: rgb(31, 30, 30);   
+    --gray: rgb(230, 230, 230);
+    --green: rgb(129, 205, 149);
+    --shadow: rgba(0, 0, 0, 0.5); 
+    --radius: 15px;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    font-family: 'Roboto', sans-serif;
+    text-transform: uppercase;
+}
+
+#game {
+    display: grid;
+    grid-template-columns: repeat(3, 100px);
+    grid-template-rows: repeat(3, 100px);
+    gap: 10px;
+    top: 10%;
+    position: absolute;
+}
+
+.cell {
+    width: 100px;
+    height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 2em;
+    cursor: pointer;
+    border: 2px solid var(--black);
+    border-radius: 10px;
+    transition: all 0.2s ease;
+    z-index: 1;
+}
+
+.winComb{
+    background-color: var(--green);
+}
+
+.cell_hover{
+    background-color: var(--gray);
+    transform: scale(1.1);
+    z-index: 5;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
+}
+
+.background {
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background-color: var(--shadow);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 6;
+}
+
+.box {
+    position: absolute;
+    background-color: var(--white);
+    border-radius: var(--radius);
+    top: 60%;
+    gap: 10px;
+    box-shadow: 0 0 10px var(--shadow);
+    z-index: 10;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    flex-direction: column;
+}
+
+.win {
+    font-size: 30px;
+    font-weight: bold;
+    position: relative;
+    top: 10px;
+    margin: 0;
+}
+
+.message-box{
+    display: flex;
+    width: 300px;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.message {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+button {
+    border: 2px solid var(--black);
+    background-color: var(--white);
+    height: 50px;
+    width: 50px;
+    border-radius: var(--radius);
+    font-size: 30px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+button:hover {
+    background-color: var(--black);
+    color: var(--white);
+}
+
+button.yes, button.no {
+    width: auto;
+}
