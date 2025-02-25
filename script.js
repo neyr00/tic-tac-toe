@@ -45,12 +45,17 @@ document.addEventListener('DOMContentLoaded', () => {
 
         if (gameState[cellIndex] === '') {
             cell.classList.add('cell_hover');
+            cell.textContent = currentPlayer;
         }
     }
 
     function handleCellLeave(event) {
         const cell = event.target;
-        cell.classList.remove('cell_hover');
+        
+        if(cell.classList.contains('cell_hover')){
+            cell.classList.remove('cell_hover');
+            cell.textContent = '';
+        }
     }
 
     function winCheck() {
