@@ -9,6 +9,8 @@ document.addEventListener('DOMContentLoaded', () => {
     const gameBoard = document.getElementById('game');
     let currentPlayer;
     let AI_strength = 50;
+    let first;
+    let isRestart = false;
     VS_bot = true;
     let gameState = ['', '', '', '', '', '', '', '', ''];
     const winComb = [
@@ -35,6 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
         gameState[clickedCellIndex] = currentPlayer;
         clickedCell.textContent = currentPlayer;
         console.log(`PLAYER ${currentPlayer}: ${clickedCellIndex}`);
+        clickedCell.classList.add('clicked');
         clickedCell.classList.remove('cell_hover');
         isPlayerTurn = false;
         winCheck();
@@ -88,21 +91,19 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
-        if (!isPlayerTurn && isGameActive)
+        if (!isPlayerTurn && isGameActive && VS_bot)
             botMove();
     }
 
     function highlightWinningCells(combination) {
-        combination.forEach(index => {
-            const cell = document.querySelector(`[cell-index='${index}']`);
+        combination.forEach(i => {
+            const cell = document.querySelector(`[cell-index='${i}']`);
             cell.classList.add('winComb');
         });
     }
 
     function botMove() {
-        if(!VS_bot)
-            return;
-        let availableCells = gameState.map((cell, index) => cell === '' ? index : null).filter(cell => cell !== null);
+        let availableCells = gameState.map((cell, i) => cell === '' ? i : null).filter(cell => cell !== null);
 
         let botCellIndex;
         if(Math.floor(Math.random() * 101) < AI_strength)
@@ -112,7 +113,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         console.log(`BOT ${currentPlayer}: ${botCellIndex}`);
         gameState[botCellIndex] = currentPlayer;
-        document.querySelector(`[cell-index='${botCellIndex}']`).textContent = currentPlayer;
+        
+        const botCell = document.querySelector(`[cell-index='${botCellIndex}']`);
+        botCell.textContent = currentPlayer;
+        botCell.classList.add('clicked');
         isPlayerTurn = true;    
         winCheck();
     }
@@ -120,13 +124,16 @@ document.addEventListener('DOMContentLoaded', () => {
     function AI(availableCells){
         if(gameState[4] === '')
             return 4;
+        else if(gameState[4] !== '' &&
+                [0, 2, 6, 8].filter(i => gameState[i] === '').length === 4)
+            return [0, 2, 6, 8][Math.floor(Math.random() * 4)];
         for (let i = 0; i < winComb.length; i++) {
             const winCondition = winComb[i];
             let comb = [gameState[winCondition[0]],
                         gameState[winCondition[1]],
                         gameState[winCondition[2]]];
             if (comb.filter(i => i === currentPlayer).length === 2 &&
-                comb.filter(i => i === '').length === 1)
+                comb.includes(''))
                 return winCondition[comb.findIndex(i => i === '')];
         }
         for (let i = 0; i < winComb.length; i++) {
@@ -135,7 +142,7 @@ document.addEventListener('DOMContentLoaded', () => {
                         gameState[winCondition[1]],
                         gameState[winCondition[2]]];
             if (comb.filter(i => i === ((currentPlayer === 'X') ? 'O' : 'X')).length === 2 &&
-                            comb.filter(i => i === '').length === 1)
+                            comb.includes(''))
                 return winCondition[comb.findIndex(i => i === '')];
         }
         for (let i = 0; i < winComb.length; i++) {
@@ -143,8 +150,8 @@ document.addEventListener('DOMContentLoaded', () => {
             let comb = [gameState[winCondition[0]],
                         gameState[winCondition[1]],
                         gameState[winCondition[2]]];
-            if (comb.filter(i => i === currentPlayer).length === 1 &&
-                comb.filter(i => i === '').length === 2 )
+            if (comb.filter(i => i === '').length === 2  &&
+                comb.includes(currentPlayer))
                 return winCondition[comb.findIndex(i => i === '')];
         }
         
@@ -176,10 +183,6 @@ document.addEventListener('DOMContentLoaded', () => {
         xBtn.textContent = 'X';
 
         const oBtn = document.createElement('button');
-        if(VS_bot)
-            oBtn.classList.remove('oDisabled');
-        else
-            oBtn.classList.add('oDisabled');
         oBtn.textContent = 'O';
 
         // Slider
@@ -194,9 +197,9 @@ document.addEventListener('DOMContentLoaded', () => {
         slider.value = AI_strength;
         slider.id = 'slider';
 
-        const difficult = document.createElement('p');
-        difficult.classList.add('sliderText');
-        difficult.textContent = 'difficult';
+        const difficulty = document.createElement('p');
+        difficulty.classList.add('sliderText');
+        difficulty.textContent = 'difficulty';
 
         // CheckBox
         const label = document.createElement('label');
@@ -212,21 +215,34 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const switchText = document.createElement('div');
         switchText.classList.add('switchText');
-        switchText.textContent = VS_bot ? 'vs bot' : 'vs human'; 
-        
+
+        // VS 
+        if(VS_bot){
+            slider.classList.remove('off');
+            oBtn.classList.remove('off');
+            switchText.textContent = 'vs bot'; 
+        }
+        else{
+            slider.classList.add('off');
+            oBtn.classList.add('off');
+            switchText.textContent = 'vs human'; 
+        }
+
         // Events
         xBtn.addEventListener('click', function() {
             document.body.removeChild(background);
             isPlayerTurn = true;
             isGameActive = true;
+            first = true;
         });
         oBtn.addEventListener('click', function() {
             document.body.removeChild(background);
             isPlayerTurn = false;
             isGameActive = true;
+            first = false;
             botMove();
         });
-        slider.addEventListener('input', (event) => {
+        slider.addEventListener('input', function(event) {
             currentValue = event.target.value;
             AI_strength = slider.value;
         });
@@ -234,11 +250,13 @@ document.addEventListener('DOMContentLoaded', () => {
             if (this.checked) {
                 VS_bot = true;
                 switchText.textContent = 'vs bot';
-                oBtn.classList.remove('oDisabled');
+                oBtn.classList.remove('off');
+                slider.classList.remove('off');
             } else {
                 VS_bot = false;
                 switchText.textContent = 'vs human';
-                oBtn.classList.add('oDisabled');
+                oBtn.classList.add('off');
+                slider.classList.add('off');
             }
         });
         
@@ -248,7 +266,7 @@ document.addEventListener('DOMContentLoaded', () => {
         messageBox.appendChild(xBtn);
         box.appendChild(messageBox);
         
-        sliderBox.appendChild(difficult);
+        sliderBox.appendChild(difficulty);
         sliderBox.appendChild(slider);
         box.appendChild(sliderBox);
         
@@ -259,6 +277,7 @@ document.addEventListener('DOMContentLoaded', () => {
         
         background.appendChild(box);
         document.body.appendChild(background);
+        //gameBoard.appendChild(background);
     }
 
     function end(who){
@@ -274,12 +293,10 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const whoWin = document.createElement('p');
         whoWin.classList.add('win');
-        if(who !== '0'){
+        if(who !== '0')
             whoWin.textContent = `${who} won!`;
-        }
-        else {
+        else 
             whoWin.textContent = 'DRAW!';
-        }
 
         const message = document.createElement('p');
         message.classList.add('message');
@@ -297,12 +314,15 @@ document.addEventListener('DOMContentLoaded', () => {
         // Events
         yesBtn.addEventListener('click', function() {
             document.body.removeChild(background);
+            isRestart = true;
             createBoard();
         });
 
         noBtn.addEventListener('click', function() {
             document.body.removeChild(background);
-            window.close();
+            isRestart = false;
+            choose();
+            createBoard();
         });
 
         box.appendChild(whoWin);
@@ -319,8 +339,9 @@ document.addEventListener('DOMContentLoaded', () => {
         console.clear();
         gameState = ['', '', '', '', '', '', '', '', ''];
         currentPlayer = 'X';
-        choose();
+        isPlayerTurn = first;
         gameBoard.innerHTML = '';
+        isGameActive = true;
         for (let i = 0; i < 9; i++) {
             const cell = document.createElement('div');
             cell.classList.add('cell');
@@ -330,6 +351,9 @@ document.addEventListener('DOMContentLoaded', () => {
             cell.addEventListener('mouseleave', handleCellLeave);
             gameBoard.appendChild(cell);
         }
+        if(isRestart && VS_bot && !isPlayerTurn)
+            botMove();
     }
+    choose();
     createBoard();
 });
