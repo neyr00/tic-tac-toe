@@ -17,6 +17,7 @@ body {
     overflow: hidden;
     user-select: none; 
     background-color: var(--white);
+    -webkit-tap-highlight-color: transparent;
 }
 
 #game {
@@ -69,6 +70,8 @@ body {
     justify-content: center;
     align-items: center;
     z-index: 6;
+    top: 0;
+    left: 0;
 }
 
 .box {
@@ -145,7 +148,7 @@ button {
     transition: all 0.2s ease;
 }
 
-button:hover {
+button:hover, button:active {
     background-color: var(--black);
     color: var(--white);
 }
@@ -209,10 +212,6 @@ input:checked + .toggle{
 input:checked ~ .switchText{
     translate: -60%;
 }
-
-/* .switchField:has(input:checked) {
-    background-color: var(--green); 
-} */
 
 input:checked ~ .switchText {
     width: 100%;

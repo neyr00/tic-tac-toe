@@ -349,6 +349,11 @@ document.addEventListener('DOMContentLoaded', () => {
             cell.addEventListener('click', handleCellClick);
             cell.addEventListener('mouseenter', handleCellHover);
             cell.addEventListener('mouseleave', handleCellLeave);
+
+            cell.addEventListener('touchstart', handleCellHover);
+            cell.addEventListener('touchend', handleCellLeave);
+            cell.addEventListener('touchcancel', handleCellLeave);
+
             gameBoard.appendChild(cell);
         }
         if(isRestart && VS_bot && !isPlayerTurn)
