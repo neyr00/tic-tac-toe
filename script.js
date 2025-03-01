@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     document.head.appendChild(link);
 
-    const gameBoard = document.getElementById('game');
+    const gameBoard = document.getElementById('tic-tac-toe');
     let currentPlayer;
     let AI_strength = 50;
     let first;
@@ -277,7 +277,6 @@ document.addEventListener('DOMContentLoaded', () => {
         
         background.appendChild(box);
         document.body.appendChild(background);
-        //gameBoard.appendChild(background);
     }
 
     function end(who){

@@ -20,7 +20,7 @@ body {
     -webkit-tap-highlight-color: transparent;
 }
 
-#game {
+#tic-tac-toe {
     display: grid;
     grid-template-columns: repeat(3, 100px);
     grid-template-rows: repeat(3, 100px);
