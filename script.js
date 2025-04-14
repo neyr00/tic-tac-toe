@@ -6,9 +6,10 @@ class TicTacToe {
         link.rel = 'stylesheet';
         link.href = 'styles.css';
         document.head.appendChild(link);
+        this.container.classList.add('XO');
         
         this.AI_strength = 50;
-        this.first = true;
+        this.first = true; 
         this.winComb = [
             [0, 1, 2],
             [3, 4, 5],
@@ -278,6 +279,7 @@ class TicTacToe {
         xBtn.addEventListener('touchstart', () => xBtn.classList.add('active'));
         xBtn.addEventListener('touchend', () => xBtn.classList.remove('active'));
         xBtn.addEventListener('touchcancel', () => xBtn.classList.remove('active'));    
+
         oBtn.addEventListener('click', () => {
             this.container.removeChild(background);
             this.isPlayerTurn = false;
@@ -287,6 +289,7 @@ class TicTacToe {
         oBtn.addEventListener('touchstart', () => oBtn.classList.add('active'));
         oBtn.addEventListener('touchend', () => oBtn.classList.remove('active'));
         oBtn.addEventListener('touchcancel', () => oBtn.classList.remove('active'));
+        
         slider.addEventListener('input', (event) => {
             this.AI_strength = event.target.value;
         });

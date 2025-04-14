@@ -1,7 +1,7 @@
 :root {
     --black: rgb(41, 41, 43); 
     --white: rgb(201, 199, 186); 
-    --green: #7e9f8c;
+    --green: rgb(126, 159, 140);
     --shadow: rgba(0, 0, 0, 0.3); 
     --radius: 15px;
 }
@@ -17,7 +17,6 @@
     border-radius: var(--radius);
     background-color: var(--white);
     box-shadow: 0 0 30px var(--shadow);
-    margin: 20px;
     position: relative;
     overflow: hidden; 
     font-family: 'Roboto', sans-serif;
@@ -164,7 +163,7 @@
     transform: scale(1.1);
 }
 
-.button.off {
+.off {
     opacity: 0%;
     pointer-events: none;
 }
