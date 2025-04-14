@@ -24,6 +24,7 @@
     text-transform: uppercase;
     -webkit-tap-highlight-color: transparent;
     user-select: none; 
+    transform: scale(1);
 }
 
 .grid {
@@ -88,6 +89,7 @@
     border-radius: var(--radius);
     top: 20%;
     width: 300px;
+    outline: 3px solid var(--black);
     height: auto;
     gap: 10px;
     box-shadow: 0 0 10px var(--shadow);

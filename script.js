@@ -15,6 +15,10 @@ class TicTacToe {
         ];
         this.VS_bot = true;
         this.isRestart = false;
+
+        this.scale = parseInt(container.getAttribute('scale'))/100 || 1;
+        this.container.style.transform = `scale(${this.scale})`;
+        
         this.init();
     }
 
