@@ -6,27 +6,35 @@
     --radius: 15px;
 }
 
-body {
+.XO {
     display: flex;
+    flex-direction: column;
     justify-content: center;
     align-items: center;
-    height: 100vh;
-    margin: 0;
+    width: 400px;
+    height: 400px;
+    border: 3px solid var(--black);
+    border-radius: var(--radius);
+    background-color: var(--white);
+    box-shadow: 0 0 30px var(--shadow);
+    margin: 20px;
+    position: relative;
+    overflow: hidden; 
     font-family: 'Roboto', sans-serif;
     text-transform: uppercase;
-    overflow: hidden;
-    user-select: none; 
-    background-color: var(--white);
     -webkit-tap-highlight-color: transparent;
+    user-select: none; 
 }
 
-#tic-tac-toe {
+.grid {
     display: grid;
     grid-template-columns: repeat(3, 100px);
     grid-template-rows: repeat(3, 100px);
     gap: 10px;
-    top: 10%;
     position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
 }
 
 .cell {
@@ -44,7 +52,7 @@ body {
     background-color: var(--white);
 }
 
-.cell_hover{
+.cell_hover {
     outline: 0;
     background-color: var(--black);
     transform: scale(1.1);
@@ -53,16 +61,16 @@ body {
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
 }
 
-.clicked{
+.clicked {
     pointer-events: none;
 }
 
-.winComb{
+.winComb {
     background-color: var(--green);
 }
 
 .background {
-    position: fixed;
+    position: absolute;
     width: 100%;
     height: 100%;
     background-color: var(--shadow);
@@ -101,7 +109,7 @@ body {
     margin-bottom: 5px;
 }
 
-.message-box{
+.message-box {
     display: flex;
     width: 300px;
     justify-content: space-around;
@@ -109,7 +117,7 @@ body {
     height: 60px;
 }
 
-.message, .sliderText{
+.message, .sliderText {
     font-size: 20px;
     font-weight: bold;
     text-align: left;
@@ -151,6 +159,7 @@ button {
 button:hover, button:active {
     background-color: var(--black);
     color: var(--white);
+    transform: scale(1.1);
 }
 
 .off {
@@ -205,11 +214,11 @@ button.yes, button.no {
     transition: all 0.2s ease; 
 }
 
-input:checked + .toggle{
+input:checked + .toggle {
     left: calc(100% - 20px); 
 }
 
-input:checked ~ .switchText{
+input:checked ~ .switchText {
     translate: -60%;
 }
 

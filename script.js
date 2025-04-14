@@ -1,77 +1,102 @@
-document.addEventListener('DOMContentLoaded', () => {
+class TicTacToe {
+    constructor(container) {
+        this.container = container;
+        this.AI_strength = 50;
+        this.first = true;
+        this.winComb = [
+            [0, 1, 2],
+            [3, 4, 5],
+            [6, 7, 8],
+            [0, 3, 6],
+            [1, 4, 7],
+            [2, 5, 8],
+            [0, 4, 8],
+            [2, 4, 6]
+        ];
+        this.VS_bot = true;
+        this.isRestart = false;
+        this.init();
+    }
 
-    const link = document.createElement('link');
-    link.rel = 'stylesheet';
-    link.href = 'styles.css';
+    init() {
+        this.currentPlayer = 'X'; 
+        this.gameState = ['', '', '', '', '', '', '', '', ''];
+        this.isGameActive = true;
+        this.isPlayerTurn = this.first;
+        this.createGameBoard();
+        if(!this.isRestart)
+            this.choose();
+        else if (this.VS_bot && !this.isPlayerTurn)
+            this.botMove();
+    }
 
-    document.head.appendChild(link);
+    createGameBoard() {
+        this.container.innerHTML = '';
+        const gameBoard = document.createElement('div');
+        gameBoard.classList.add('grid');
+        this.container.appendChild(gameBoard);
 
-    const gameBoard = document.getElementById('tic-tac-toe');
-    let currentPlayer;
-    let AI_strength = 50;
-    let first;
-    let isRestart = false;
-    VS_bot = true;
-    let gameState = ['', '', '', '', '', '', '', '', ''];
-    const winComb = [
-        [0, 1, 2],
-        [3, 4, 5],
-        [6, 7, 8],
-        [0, 3, 6],
-        [1, 4, 7],
-        [2, 5, 8],
-        [0, 4, 8],
-        [2, 4, 6]
-    ];
-    let isGameActive = false;
-    let isPlayerTurn;
+        for (let i = 0; i < 9; i++) {
+            const cell = document.createElement('div');
+            cell.classList.add('cell');
+            cell.setAttribute('cell-index', i);
+            cell.addEventListener('click', this.handleCellClick.bind(this));
+            cell.addEventListener('mouseenter', this.handleCellHover.bind(this));
+            cell.addEventListener('mouseleave', this.handleCellLeave.bind(this));
 
-    function handleCellClick(event) {
+            cell.addEventListener('touchstart', this.handleCellHover.bind(this));
+            cell.addEventListener('touchend', this.handleCellLeave.bind(this));
+            cell.addEventListener('touchcancel', this.handleCellLeave.bind(this));
+
+            gameBoard.appendChild(cell);
+        }
+
+        this.gameBoard = gameBoard;
+    }
+
+    handleCellClick(event) {
         const clickedCell = event.target;
         const clickedCellIndex = parseInt(clickedCell.getAttribute('cell-index'));
 
-        if (gameState[clickedCellIndex] !== '' || !isGameActive || (!isPlayerTurn && VS_bot)) {
+        if (this.gameState[clickedCellIndex] !== '' || !this.isGameActive || (!this.isPlayerTurn && this.VS_bot)) {
             return;
         }
 
-        gameState[clickedCellIndex] = currentPlayer;
-        clickedCell.textContent = currentPlayer;
-        console.log(`PLAYER ${currentPlayer}: ${clickedCellIndex}`);
+        this.gameState[clickedCellIndex] = this.currentPlayer;
+        clickedCell.textContent = this.currentPlayer;
         clickedCell.classList.add('clicked');
         clickedCell.classList.remove('cell_hover');
-        isPlayerTurn = false;
-        winCheck();
+        this.winCheck();
     }
 
-    function handleCellHover(event) {
+    handleCellHover(event) {
         const cell = event.target;
         const cellIndex = parseInt(cell.getAttribute('cell-index'));
 
-        if (gameState[cellIndex] === '') {
+        if (this.gameState[cellIndex] === '') {
             cell.classList.add('cell_hover');
-            cell.textContent = currentPlayer;
+            cell.textContent = this.currentPlayer;
         }
     }
 
-    function handleCellLeave(event) {
+    handleCellLeave(event) {
         const cell = event.target;
 
-        if(cell.classList.contains('cell_hover')){
+        if (cell.classList.contains('cell_hover')) {
             cell.classList.remove('cell_hover');
             cell.textContent = '';
         }
     }
 
-    function winCheck() {
+    winCheck() {
         let roundWon = false;
         let winningCombination = null;
-        for (let i = 0; i < winComb.length; i++) {
-            const winCondition = winComb[i];
-            let a = gameState[winCondition[0]];
-            let b = gameState[winCondition[1]];
-            let c = gameState[winCondition[2]];
-            if (a === '' || b === '' || c === '')
-                continue;
+        for (let i = 0; i < this.winComb.length; i++) {
+            const winCondition = this.winComb[i];
+            let a = this.gameState[winCondition[0]];
+            let b = this.gameState[winCondition[1]];
+            let c = this.gameState[winCondition[2]];
+            if (a === '' || b === '' || c === '') continue;
             if (a === b && b === c) {
                 roundWon = true;
                 winningCombination = winCondition;
@@ -80,90 +105,94 @@ document.addEventListener('DOMContentLoaded', () => {
         }
 
         if (roundWon) {
-            isGameActive = false;
-            highlightWinningCells(winningCombination);
-            end(currentPlayer);
+            this.isGameActive = false;
+            this.highlightWinningCells(winningCombination);
+            this.end(this.currentPlayer);
+            return;
         }
 
-        if (!gameState.includes('') && isGameActive) {
-            isGameActive = false;
-            end('0');
+        if (!this.gameState.includes('')) {
+            this.isGameActive = false;
+            this.end('0'); 
+            return;
         }
 
-        currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
-        if (!isPlayerTurn && isGameActive && VS_bot)
-            botMove();
+        this.currentPlayer = this.currentPlayer === 'X' ? 'O' : 'X';
+        this.isPlayerTurn = !this.isPlayerTurn;
+
+        if (this.VS_bot && !this.isPlayerTurn) 
+            this.botMove();
+        else
+            this.isPlayerTurn = true;
     }
 
-    function highlightWinningCells(combination) {
+    highlightWinningCells(combination) {
         combination.forEach(i => {
-            const cell = document.querySelector(`[cell-index='${i}']`);
+            const cell = this.gameBoard.querySelector(`[cell-index='${i}']`);
             cell.classList.add('winComb');
         });
     }
 
-    function botMove() {
-        let availableCells = gameState.map((cell, i) => cell === '' ? i : null).filter(cell => cell !== null);
+    botMove() {
+        let availableCells = this.gameState.map((cell, i) => cell === '' ? i : null).filter(cell => cell !== null);
 
         let botCellIndex;
-        if(Math.floor(Math.random() * 101) < AI_strength)
-            botCellIndex = AI(availableCells);        
+        if (Math.floor(Math.random() * 101) < this.AI_strength)
+            botCellIndex = this.AI(availableCells);
         else
-            botCellIndex = randomMove(availableCells);   
+            botCellIndex = this.randomMove(availableCells);
 
-        console.log(`BOT ${currentPlayer}: ${botCellIndex}`);
-        gameState[botCellIndex] = currentPlayer;
-        
-        const botCell = document.querySelector(`[cell-index='${botCellIndex}']`);
-        botCell.textContent = currentPlayer;
+        this.gameState[botCellIndex] = this.currentPlayer;
+
+        const botCell = this.gameBoard.querySelector(`[cell-index='${botCellIndex}']`);
+        botCell.textContent = this.currentPlayer;
         botCell.classList.add('clicked');
-        isPlayerTurn = true;    
-        winCheck();
+        this.winCheck();
     }
 
-    function AI(availableCells){
-        if(gameState[4] === '')
+    AI(availableCells) {
+        if (this.gameState[4] === '')
             return 4;
-        else if(gameState[4] !== '' &&
-                [0, 2, 6, 8].filter(i => gameState[i] === '').length === 4)
+        else if (this.gameState[4] !== '' &&
+            [0, 2, 6, 8].filter(i => this.gameState[i] === '').length === 4)
             return [0, 2, 6, 8][Math.floor(Math.random() * 4)];
-        for (let i = 0; i < winComb.length; i++) {
-            const winCondition = winComb[i];
-            let comb = [gameState[winCondition[0]],
-                        gameState[winCondition[1]],
-                        gameState[winCondition[2]]];
-            if (comb.filter(i => i === currentPlayer).length === 2 &&
+        for (let i = 0; i < this.winComb.length; i++) {
+            const winCondition = this.winComb[i];
+            let comb = [this.gameState[winCondition[0]],
+            this.gameState[winCondition[1]],
+            this.gameState[winCondition[2]]];
+            if (comb.filter(i => i === this.currentPlayer).length === 2 &&
                 comb.includes(''))
                 return winCondition[comb.findIndex(i => i === '')];
         }
-        for (let i = 0; i < winComb.length; i++) {
-            const winCondition = winComb[i];
-            let comb = [gameState[winCondition[0]],
-                        gameState[winCondition[1]],
-                        gameState[winCondition[2]]];
-            if (comb.filter(i => i === ((currentPlayer === 'X') ? 'O' : 'X')).length === 2 &&
-                            comb.includes(''))
+        for (let i = 0; i < this.winComb.length; i++) {
+            const winCondition = this.winComb[i];
+            let comb = [this.gameState[winCondition[0]],
+            this.gameState[winCondition[1]],
+            this.gameState[winCondition[2]]];
+            if (comb.filter(i => i === ((this.currentPlayer === 'X') ? 'O' : 'X')).length === 2 &&
+                comb.includes(''))
                 return winCondition[comb.findIndex(i => i === '')];
         }
-        for (let i = 0; i < winComb.length; i++) {
-            const winCondition = winComb[i];
-            let comb = [gameState[winCondition[0]],
-                        gameState[winCondition[1]],
-                        gameState[winCondition[2]]];
-            if (comb.filter(i => i === '').length === 2  &&
-                comb.includes(currentPlayer))
+        for (let i = 0; i < this.winComb.length; i++) {
+            const winCondition = this.winComb[i];
+            let comb = [this.gameState[winCondition[0]],
+            this.gameState[winCondition[1]],
+            this.gameState[winCondition[2]]];
+            if (comb.filter(i => i === '').length === 2 &&
+                comb.includes(this.currentPlayer))
                 return winCondition[comb.findIndex(i => i === '')];
         }
-        
-        return randomMove(availableCells);
+
+        return this.randomMove(availableCells);
     }
 
-    function randomMove(availableCells){
+    randomMove(availableCells) {
         let randomIndex = Math.floor(Math.random() * availableCells.length);
         return availableCells[randomIndex];
     }
 
-    function choose(){
+    choose() {
         const background = document.createElement('div');
         background.classList.add('background');
 
@@ -194,7 +223,7 @@ document.addEventListener('DOMContentLoaded', () => {
         slider.type = 'range';
         slider.min = '0';
         slider.max = '100';
-        slider.value = AI_strength;
+        slider.value = this.AI_strength;
         slider.id = 'slider';
 
         const difficulty = document.createElement('p');
@@ -208,7 +237,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const switchBtn = document.createElement('input');
         switchBtn.type = 'checkbox';
         switchBtn.id = 'switchBtn';
-        switchBtn.checked = VS_bot;
+        switchBtn.checked = this.VS_bot;
 
         const switchBack = document.createElement('div');
         switchBack.classList.add('toggle');
@@ -217,69 +246,71 @@ document.addEventListener('DOMContentLoaded', () => {
         switchText.classList.add('switchText');
 
         // VS 
-        if(VS_bot){
+        if (this.VS_bot) {
             slider.classList.remove('off');
             oBtn.classList.remove('off');
-            switchText.textContent = 'vs bot'; 
+            switchText.textContent = 'vs bot';
         }
-        else{
+        else {
             slider.classList.add('off');
             oBtn.classList.add('off');
-            switchText.textContent = 'vs human'; 
+            switchText.textContent = 'vs human';
         }
 
         // Events
-        xBtn.addEventListener('click', function() {
-            document.body.removeChild(background);
-            isPlayerTurn = true;
-            isGameActive = true;
-            first = true;
+        xBtn.addEventListener('click', () => {
+            this.container.removeChild(background);
+            this.isPlayerTurn = true;
+            this.first = true;
         });
-        oBtn.addEventListener('click', function() {
-            document.body.removeChild(background);
-            isPlayerTurn = false;
-            isGameActive = true;
-            first = false;
-            botMove();
+        xBtn.addEventListener('touchstart', () => xBtn.classList.add('active'));
+        xBtn.addEventListener('touchend', () => xBtn.classList.remove('active'));
+        xBtn.addEventListener('touchcancel', () => xBtn.classList.remove('active'));    
+        oBtn.addEventListener('click', () => {
+            this.container.removeChild(background);
+            this.isPlayerTurn = false;
+            this.first = false;
+            this.botMove();
         });
-        slider.addEventListener('input', function(event) {
-            currentValue = event.target.value;
-            AI_strength = slider.value;
+        oBtn.addEventListener('touchstart', () => oBtn.classList.add('active'));
+        oBtn.addEventListener('touchend', () => oBtn.classList.remove('active'));
+        oBtn.addEventListener('touchcancel', () => oBtn.classList.remove('active'));
+        slider.addEventListener('input', (event) => {
+            this.AI_strength = event.target.value;
         });
-        switchBtn.addEventListener('change', function() {
-            if (this.checked) {
-                VS_bot = true;
+        switchBtn.addEventListener('change', () => {
+            if (switchBtn.checked) {
+                this.VS_bot = true;
                 switchText.textContent = 'vs bot';
                 oBtn.classList.remove('off');
                 slider.classList.remove('off');
             } else {
-                VS_bot = false;
+                this.VS_bot = false;
                 switchText.textContent = 'vs human';
                 oBtn.classList.add('off');
                 slider.classList.add('off');
             }
         });
-        
-        
+
         messageBox.appendChild(message);
         messageBox.appendChild(oBtn);
         messageBox.appendChild(xBtn);
         box.appendChild(messageBox);
-        
+
         sliderBox.appendChild(difficulty);
         sliderBox.appendChild(slider);
         box.appendChild(sliderBox);
-        
+
         label.appendChild(switchBtn);
         label.appendChild(switchBack);
         label.appendChild(switchText);
-        box.appendChild(label);    
-        
+        box.appendChild(label);
+
         background.appendChild(box);
-        document.body.appendChild(background);
+        this.container.appendChild(background);
     }
 
-    function end(who){
+    end(who) {
         const background = document.createElement('div');
         background.classList.add('background');
 
@@ -292,9 +323,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
         const whoWin = document.createElement('p');
         whoWin.classList.add('win');
-        if(who !== '0')
+        if (who !== '0')
             whoWin.textContent = `${who} won!`;
-        else 
+        else
             whoWin.textContent = 'DRAW!';
 
         const message = document.createElement('p');
@@ -311,17 +342,16 @@ document.addEventListener('DOMContentLoaded', () => {
         noBtn.textContent = 'NO';
 
         // Events
-        yesBtn.addEventListener('click', function() {
-            document.body.removeChild(background);
-            isRestart = true;
-            createBoard();
+        yesBtn.addEventListener('click', () => {
+            this.container.removeChild(background);
+            this.isRestart = true;
+            this.init();
         });
 
-        noBtn.addEventListener('click', function() {
-            document.body.removeChild(background);
-            isRestart = false;
-            choose();
-            createBoard();
+        noBtn.addEventListener('click', () => {
+            this.container.removeChild(background);
+            this.isRestart = false;
+            this.init();
         });
 
         box.appendChild(whoWin);
@@ -331,33 +361,13 @@ document.addEventListener('DOMContentLoaded', () => {
         messagebox.appendChild(noBtn);
         background.appendChild(box);
 
-        document.body.appendChild(background);
+        this.container.appendChild(background);
     }
+}
 
-    function createBoard() {
-        console.clear();
-        gameState = ['', '', '', '', '', '', '', '', ''];
-        currentPlayer = 'X';
-        isPlayerTurn = first;
-        gameBoard.innerHTML = '';
-        isGameActive = true;
-        for (let i = 0; i < 9; i++) {
-            const cell = document.createElement('div');
-            cell.classList.add('cell');
-            cell.setAttribute('cell-index', i);
-            cell.addEventListener('click', handleCellClick);
-            cell.addEventListener('mouseenter', handleCellHover);
-            cell.addEventListener('mouseleave', handleCellLeave);
-
-            cell.addEventListener('touchstart', handleCellHover);
-            cell.addEventListener('touchend', handleCellLeave);
-            cell.addEventListener('touchcancel', handleCellLeave);
-
-            gameBoard.appendChild(cell);
-        }
-        if(isRestart && VS_bot && !isPlayerTurn)
-            botMove();
-    }
-    choose();
-    createBoard();
+// Automatically initialize games for all <ttt> tags
+document.addEventListener('DOMContentLoaded', () => {
+    document.querySelectorAll('ttt').forEach(tag => {
+        new TicTacToe(tag);
+    });
 });
