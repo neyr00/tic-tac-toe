@@ -1,6 +1,12 @@
 class TicTacToe {
     constructor(container) {
         this.container = container;
+        
+        const link = document.createElement('link');
+        link.rel = 'stylesheet';
+        link.href = 'styles.css';
+        document.head.appendChild(link);
+        
         this.AI_strength = 50;
         this.first = true;
         this.winComb = [
@@ -16,9 +22,9 @@ class TicTacToe {
         this.VS_bot = true;
         this.isRestart = false;
 
-        this.scale = parseInt(container.getAttribute('scale'))/100 || 1;
+        this.scale = parseFloat(container.getAttribute('scale')) || 1;
         this.container.style.transform = `scale(${this.scale})`;
-        
+
         this.init();
     }
 
@@ -214,9 +220,11 @@ class TicTacToe {
         // Buttons
         const xBtn = document.createElement('button');
         xBtn.textContent = 'X';
+        xBtn.classList.add('button');
 
         const oBtn = document.createElement('button');
         oBtn.textContent = 'O';
+        oBtn.classList.add('button');
 
         // Slider
         const sliderBox = document.createElement('div');
@@ -338,11 +346,11 @@ class TicTacToe {
 
         // Buttons
         const yesBtn = document.createElement('button');
-        yesBtn.classList.add('yes');
+        yesBtn.classList.add('button', 'yes');
         yesBtn.textContent = 'YES';
 
         const noBtn = document.createElement('button');
-        noBtn.classList.add('no');
+        noBtn.classList.add('button', 'no');
         noBtn.textContent = 'NO';
 
         // Events
