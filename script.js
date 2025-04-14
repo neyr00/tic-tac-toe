@@ -377,7 +377,6 @@ class TicTacToe {
     }
 }
 
-// Automatically initialize games for all <ttt> tags
 document.addEventListener('DOMContentLoaded', () => {
     document.querySelectorAll('ttt').forEach(tag => {
         new TicTacToe(tag);
