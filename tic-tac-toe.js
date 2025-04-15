@@ -69,14 +69,15 @@ class TicTacToe {
         const clickedCell = event.target;
         const clickedCellIndex = parseInt(clickedCell.getAttribute('cell-index'));
 
-        if (this.gameState[clickedCellIndex] !== '' || !this.isGameActive || (!this.isPlayerTurn && this.VS_bot)) {
+        if (this.gameState[clickedCellIndex] !== '' || !this.isGameActive || (!this.isPlayerTurn && this.VS_bot))
             return;
-        }
 
         this.gameState[clickedCellIndex] = this.currentPlayer;
         clickedCell.textContent = this.currentPlayer;
         clickedCell.classList.add('clicked');
         clickedCell.classList.remove('cell_hover');
+
+        console.log(`PLAYER placed '${this.currentPlayer}' in ${clickedCellIndex + 1}`);
         this.winCheck();
     }
 
@@ -158,6 +159,8 @@ class TicTacToe {
         const botCell = this.gameBoard.querySelector(`[cell-index='${botCellIndex}']`);
         botCell.textContent = this.currentPlayer;
         botCell.classList.add('clicked');
+
+        console.log(`BOT placed '${this.currentPlayer}' in ${botCellIndex + 1}`);
         this.winCheck();
     }
 
