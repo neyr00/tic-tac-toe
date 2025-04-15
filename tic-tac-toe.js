@@ -4,7 +4,7 @@ class TicTacToe {
         
         const link = document.createElement('link');
         link.rel = 'stylesheet';
-        link.href = 'styles.css';
+        link.href = 'tic-tac-toe.css';
         document.head.appendChild(link);
         this.container.classList.add('XO');
         
@@ -165,7 +165,7 @@ class TicTacToe {
         if (this.gameState[4] === '')
             return 4;
         else if (this.gameState[4] !== '' &&
-            [0, 2, 6, 8].filter(i => this.gameState[i] === '').length === 4)
+                 [0, 2, 6, 8].filter(i => this.gameState[i] === '').length === 4)
             return [0, 2, 6, 8][Math.floor(Math.random() * 4)];
         for (let i = 0; i < this.winComb.length; i++) {
             const winCondition = this.winComb[i];
