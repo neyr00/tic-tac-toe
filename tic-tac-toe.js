@@ -1,15 +1,14 @@
-class TicTacToe {
-    constructor(container) {
-        this.container = container;
-        
+class TicTacToe extends HTMLElement {
+    constructor() {
+        super();
         const link = document.createElement('link');
         link.rel = 'stylesheet';
         link.href = 'tic-tac-toe.css';
         document.head.appendChild(link);
-        this.container.classList.add('XO');
-        
+
+        this.classList.add('XO');
         this.AI_strength = 50;
-        this.first = true; 
+        this.first = true;
         this.winComb = [
             [0, 1, 2],
             [3, 4, 5],
@@ -23,8 +22,8 @@ class TicTacToe {
         this.VS_bot = true;
         this.isRestart = false;
 
-        this.scale = parseFloat(container.getAttribute('scale')) || 1;
-        this.container.style.transform = `scale(${this.scale})`;
+        this.scale = parseFloat(this.getAttribute('scale')) || 1;
+        this.style.transform = `scale(${this.scale})`;
 
         this.init();
     }
@@ -42,10 +41,10 @@ class TicTacToe {
     }
 
     createGameBoard() {
-        this.container.innerHTML = '';
+        this.innerHTML = '';
         const gameBoard = document.createElement('div');
         gameBoard.classList.add('grid');
-        this.container.appendChild(gameBoard);
+        this.appendChild(gameBoard);
 
         for (let i = 0; i < 9; i++) {
             const cell = document.createElement('div');
@@ -224,11 +223,9 @@ class TicTacToe {
         // Buttons
         const xBtn = document.createElement('button');
         xBtn.textContent = 'X';
-        xBtn.classList.add('button');
 
         const oBtn = document.createElement('button');
         oBtn.textContent = 'O';
-        oBtn.classList.add('button');
 
         // Slider
         const sliderBox = document.createElement('div');
@@ -275,7 +272,7 @@ class TicTacToe {
 
         // Events
         xBtn.addEventListener('click', () => {
-            this.container.removeChild(background);
+            this.removeChild(background);
             this.isPlayerTurn = true;
             this.first = true;
         });
@@ -284,7 +281,7 @@ class TicTacToe {
         xBtn.addEventListener('touchcancel', () => xBtn.classList.remove('active'));    
 
         oBtn.addEventListener('click', () => {
-            this.container.removeChild(background);
+            this.removeChild(background);
             this.isPlayerTurn = false;
             this.first = false;
             this.botMove();
@@ -325,7 +322,7 @@ class TicTacToe {
         box.appendChild(label);
 
         background.appendChild(box);
-        this.container.appendChild(background);
+        this.appendChild(background);
     }
 
     end(who) {
@@ -352,22 +349,22 @@ class TicTacToe {
 
         // Buttons
         const yesBtn = document.createElement('button');
-        yesBtn.classList.add('button', 'yes');
+        yesBtn.classList.add('yes');
         yesBtn.textContent = 'YES';
 
         const noBtn = document.createElement('button');
-        noBtn.classList.add('button', 'no');
+        noBtn.classList.add('no');
         noBtn.textContent = 'NO';
 
         // Events
         yesBtn.addEventListener('click', () => {
-            this.container.removeChild(background);
+            this.removeChild(background);
             this.isRestart = true;
             this.init();
         });
 
         noBtn.addEventListener('click', () => {
-            this.container.removeChild(background);
+            this.removeChild(background);
             this.isRestart = false;
             this.init();
         });
@@ -379,12 +376,8 @@ class TicTacToe {
         messagebox.appendChild(noBtn);
         background.appendChild(box);
 
-        this.container.appendChild(background);
+        this.appendChild(background);
     }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
-    document.querySelectorAll('ttt').forEach(tag => {
-        new TicTacToe(tag);
-    });
-});
+customElements.define('tic-tac-toe', TicTacToe);
