@@ -33,6 +33,7 @@ class TicTacToe extends HTMLElement {
         this.gameState = ['', '', '', '', '', '', '', '', ''];
         this.isGameActive = true;
         this.isPlayerTurn = this.first;
+        console.clear();
         this.createGameBoard();
         if(!this.isRestart)
             this.choose();
