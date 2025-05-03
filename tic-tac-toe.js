@@ -2,9 +2,11 @@ class TicTacToe extends HTMLElement {
     constructor() {
         super();
         const link = document.createElement('link');
-        link.rel = 'stylesheet';
-        link.href = 'tic-tac-toe.css';
-        document.head.appendChild(link);
+        if (!document.querySelector('link[href="tic-tac-toe.css"]')) {
+            link.rel = 'stylesheet';
+            link.href = 'tic-tac-toe.css';
+            document.head.appendChild(link);
+        }
 
         this.classList.add('XO');
         this.AI_strength = 50;
