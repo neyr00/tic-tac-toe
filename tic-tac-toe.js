@@ -1,14 +1,21 @@
 class TicTacToe extends HTMLElement {
     constructor() {
         super();
+        const cssPath = this.getAttribute('css-path') || 'tic-tac-toe.css';
         const link = document.createElement('link');
-        if (!document.querySelector('link[href="tic-tac-toe.css"]')) {
+        if (!document.querySelector(`link[href="${cssPath}"]`)) {
             link.rel = 'stylesheet';
-            link.href = 'tic-tac-toe.css';
+            link.href = cssPath;
             document.head.appendChild(link);
         }
 
-        this.classList.add('XO');
+        this.classList.add('tictactoe_app');
+        
+        // Создаем wrapper
+        this.wrapper = document.createElement('div');
+        this.wrapper.classList.add('tictactoe_wrapper');
+        this.appendChild(this.wrapper);
+
         this.AI_strength = 50;
         this.first = true;
         this.winComb = [
@@ -35,7 +42,6 @@ class TicTacToe extends HTMLElement {
         this.gameState = ['', '', '', '', '', '', '', '', ''];
         this.isGameActive = true;
         this.isPlayerTurn = this.first;
-        console.clear();
         this.createGameBoard();
         if(!this.isRestart)
             this.choose();
@@ -44,10 +50,10 @@ class TicTacToe extends HTMLElement {
     }
 
     createGameBoard() {
-        this.innerHTML = '';
+        this.wrapper.innerHTML = '';
         const gameBoard = document.createElement('div');
         gameBoard.classList.add('grid');
-        this.appendChild(gameBoard);
+        this.wrapper.appendChild(gameBoard);
 
         for (let i = 0; i < 9; i++) {
             const cell = document.createElement('div');
@@ -275,18 +281,20 @@ class TicTacToe extends HTMLElement {
 
         // Events
         xBtn.addEventListener('click', () => {
-            this.removeChild(background);
+            this.wrapper.removeChild(background);
             this.isPlayerTurn = true;
             this.first = true;
+            console.log('-----START GAME-----');
         });
         xBtn.addEventListener('touchstart', () => xBtn.classList.add('active'));
         xBtn.addEventListener('touchend', () => xBtn.classList.remove('active'));
         xBtn.addEventListener('touchcancel', () => xBtn.classList.remove('active'));    
 
         oBtn.addEventListener('click', () => {
-            this.removeChild(background);
+            this.wrapper.removeChild(background);
             this.isPlayerTurn = false;
             this.first = false;
+            console.log('-----START GAME-----');
             this.botMove();
         });
         oBtn.addEventListener('touchstart', () => oBtn.classList.add('active'));
@@ -325,10 +333,11 @@ class TicTacToe extends HTMLElement {
         box.appendChild(label);
 
         background.appendChild(box);
-        this.appendChild(background);
+        this.wrapper.appendChild(background);
     }
 
     end(who) {
+        console.log('-----END GAME-----');
         const background = document.createElement('div');
         background.classList.add('background');
 
@@ -361,13 +370,13 @@ class TicTacToe extends HTMLElement {
 
         // Events
         yesBtn.addEventListener('click', () => {
-            this.removeChild(background);
+            this.wrapper.removeChild(background);
             this.isRestart = true;
             this.init();
         });
 
         noBtn.addEventListener('click', () => {
-            this.removeChild(background);
+            this.wrapper.removeChild(background);
             this.isRestart = false;
             this.init();
         });
@@ -379,7 +388,7 @@ class TicTacToe extends HTMLElement {
         messagebox.appendChild(noBtn);
         background.appendChild(box);
 
-        this.appendChild(background);
+        this.wrapper.appendChild(background);
     }
 }
 
