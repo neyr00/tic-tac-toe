@@ -11,7 +11,6 @@ class TicTacToe extends HTMLElement {
 
         this.classList.add('tictactoe_app');
         
-        // Создаем wrapper
         this.wrapper = document.createElement('div');
         this.wrapper.classList.add('tictactoe_wrapper');
         this.appendChild(this.wrapper);
